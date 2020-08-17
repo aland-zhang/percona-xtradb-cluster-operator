@@ -580,12 +580,8 @@ spinup_pxc() {
     apply_config "$config"
 
     desc 'check if all 3 Pods started'
-<<<<<<< HEAD
     local proxy=$(get_proxy "$cluster")
     wait_for_running "$proxy" 1
-=======
-    wait_for_running "$cluster-${proxy_type}" 1
->>>>>>> e5fd973f... K8SPXC-367 SmartUpdate e2e test
     wait_for_running "$cluster-pxc" "$size"
     sleep $sleep
 
@@ -595,17 +591,10 @@ spinup_pxc() {
     fi
     run_mysql \
         "CREATE DATABASE IF NOT EXISTS myApp; use myApp; CREATE TABLE IF NOT EXISTS myApp (id int PRIMARY KEY) $encrypt;" \
-<<<<<<< HEAD
         "-h $proxy -uroot -proot_password"
     run_mysql \
         'INSERT myApp.myApp (id) VALUES (100500)' \
         "-h $proxy -uroot -proot_password"
-=======
-        "-h $cluster-${proxy_type} -uroot -proot_password"
-    run_mysql \
-        'INSERT myApp.myApp (id) VALUES (100500)' \
-        "-h $cluster-${proxy_type} -uroot -proot_password"
->>>>>>> e5fd973f... K8SPXC-367 SmartUpdate e2e test
     sleep 10
     for i in $(seq 0 $(($size - 1))); do
         compare_mysql_cmd "select-1" "SELECT * from myApp.myApp;" "-h $cluster-pxc-$i.$cluster-pxc -uroot -proot_password"
